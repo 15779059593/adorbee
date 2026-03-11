@@ -1,0 +1,19 @@
+# 测试账号配置
+test_accounts:
+  - name: "中国区测试账号"
+    username: "2y5qa@airsworld.net"
+    password: "12345678"
+    region: "CN"
+    
+# 设备信息 - 当前连接的设备
+test_devices:
+  - name: "SM-G981N"
+    model: "SM-G981N"
+    serial: "R3CN4042QJP"
+    platform: "Android"
+    
+# Appium配置
+appium_config:
+  host: "127.0.0.1"
+  port: 4723
+  path: "/"
