@@ -30,7 +30,67 @@ def close_system_dialog(driver):
     return False
 
 
+def close_notification_dialog(driver):
+    """处理通知开启弹窗"""
+    try:
+        # 查找 "Turn on" 按钮
+        turn_on_btn = driver.find_element(AppiumBy.XPATH, "//*[@text='Turn on']")
+        turn_on_btn.click()
+        print("   [OK] Clicked 'Turn on' for notification")
+        time.sleep(2)
+        
+        # 返回APP
+        driver.activate_app("com.amv.adorbee")
+        print("   [OK] Returned to APP")
+        time.sleep(2)
+        return True
+    except:
+        pass
+    
+    # 如果没有找到 Turn on，尝试点击 Cancel
+    try:
+        cancel_btn = driver.find_element(AppiumBy.XPATH, "//*[@text='Cancel']")
+        cancel_btn.click()
+        print("   [OK] Clicked 'Cancel' for notification dialog")
+        time.sleep(1)
+        return True
+    except:
+        pass
+    
+    return False
+
+
+def is_notification_dialog_present(driver):
+    """检查是否有通知开启弹窗"""
+    try:
+        driver.find_element(AppiumBy.XPATH, "//*[contains(@text, 'message notification') or contains(@text, 'Turn on')]")
+        return True
+    except:
+        pass
+    return False
+
+
 def close_ad_popup(driver):
+    """关闭广告弹窗"""
+    try:
+        close_btn = driver.find_element(AppiumBy.XPATH, "//android.widget.Button[@text='×']")
+        close_btn.click()
+        print("   [OK] Closed ad popup")
+        time.sleep(1)
+        return True
+    except:
+        pass
+    return False
+
+
+def is_ad_popup_present(driver):
+    """检查广告弹窗"""
+    try:
+        driver.find_element(AppiumBy.XPATH, "//android.widget.Button[@text='×']")
+        return True
+    except:
+        pass
+    return False
     """关闭广告弹窗"""
     try:
         close_btn = driver.find_element(AppiumBy.XPATH, "//android.widget.Button[@text='×']")
@@ -157,8 +217,15 @@ def test_login():
             print(f"   Screenshot saved: {screenshot}")
             return False
         
-        # Step 5: 关闭广告弹窗
-        print("\n[Step 5] Handle popup...")
+        # Step 5: 处理通知弹窗和广告弹窗
+        print("\n[Step 5] Handle dialogs...")
+        
+        # 先处理通知弹窗
+        if is_notification_dialog_present(driver):
+            print("   Notification dialog detected")
+            close_notification_dialog(driver)
+        
+        # 再处理广告弹窗
         if is_ad_popup_present(driver):
             close_ad_popup(driver)
             print("   [OK] Popup closed")
