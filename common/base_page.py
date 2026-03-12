@@ -5,7 +5,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.appiumby import AppiumBy
 import allure
 import os
 from datetime import datetime
@@ -30,6 +30,7 @@ class BasePage:
         """
         self.driver = driver
         self.wait = WebDriverWait(driver, DeviceConfig.EXPLICIT_WAIT, DeviceConfig.POLLING_INTERVAL)
+        self.logger = logger
         logger.info(f"初始化页面: {self.__class__.__name__}")
     
     # ==================== 元素定位 ====================

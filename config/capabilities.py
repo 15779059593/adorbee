@@ -12,6 +12,7 @@ def get_android_capabilities(app_path=None, no_reset=True):
     """
     caps = {
         'platformName': DeviceConfig.ANDROID_PLATFORM,
+        'platformVersion': DeviceConfig.ANDROID_PLATFORM_VERSION,
         'deviceName': DeviceConfig.ANDROID_DEVICE_NAME,
         'automationName': 'UiAutomator2',
         'newCommandTimeout': 300,

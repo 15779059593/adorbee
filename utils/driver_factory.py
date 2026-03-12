@@ -1,6 +1,7 @@
 # 驱动工厂 - 创建和管理 WebDriver
 
 from appium import webdriver
+from appium.options.android import UiAutomator2Options
 from config.config import AppiumConfig, DeviceConfig
 from config.capabilities import get_capabilities
 from common.logger import logger
@@ -45,10 +46,17 @@ class DriverFactory:
         # 获取设备配置
         caps = get_capabilities(platform, app_path, **kwargs)
         
+        # 创建 Options 对象
+        if platform.lower() == 'android':
+            options = UiAutomator2Options()
+            options.load_capabilities(caps)
+        else:
+            options = None
+        
         # 创建 WebDriver
         driver = webdriver.Remote(
             AppiumConfig.URL,
-            desired_capabilities=caps
+            options=options
         )
         
         # 设置隐式等待

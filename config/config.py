@@ -11,10 +11,11 @@ class DeviceConfig:
     ANDROID_PLATFORM = 'Android'
     IOS_PLATFORM = 'iOS'
     
-    # Android 默认配置
-    ANDROID_DEVICE_NAME = 'Android Device'
-    ANDROID_APP_PACKAGE = 'com.adorbee.app'
-    ANDROID_APP_ACTIVITY = 'com.adorbee.app.MainActivity'
+    # Android 默认配置 - 使用已连接的设备
+    ANDROID_DEVICE_NAME = 'SM-G981N'  # Samsung Galaxy S20
+    ANDROID_APP_PACKAGE = 'com.amv.adorbee'  # adorbee APP 包名
+    ANDROID_APP_ACTIVITY = 'com.amv.adorbee.main.MainActivity'  # 主页面Activity
+    ANDROID_PLATFORM_VERSION = '13'  # Android 版本
     
     # iOS 默认配置
     IOS_DEVICE_NAME = 'iPhone'
@@ -49,4 +50,5 @@ class AppiumConfig:
     """Appium 配置"""
     HOST = '127.0.0.1'
     PORT = 4723
-    URL = f'http://{HOST}:{PORT}/wd/hub'
+    # Appium 3.x 使用新的 URL 路径
+    URL = f'http://{HOST}:{PORT}'

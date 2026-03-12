@@ -63,3 +63,21 @@ def fresh_driver():
     driver = DriverFactory.restart_driver()
     yield driver
     DriverFactory.quit_driver()
+
+
+@pytest.fixture
+def login_page(driver):
+    """
+    登录页面对象 fixture
+    """
+    from pages.login_page import LoginPage
+    return LoginPage(driver)
+
+
+@pytest.fixture
+def device_page(driver):
+    """
+    设备列表页面对象 fixture
+    """
+    from pages.device_page import DevicePage
+    return DevicePage(driver)
