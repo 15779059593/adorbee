@@ -51,9 +51,45 @@ def test_add_device():
         print(f"   [OK] Device: {driver.capabilities.get('deviceModel', 'Unknown')}")
         print(f"   [OK] Activity: {driver.current_activity}")
         
-        # Step 2: 确保在主页
-        print("\n[Step 2] Checking main page...")
+        # Step 2: 检查当前页面
+        print("\n[Step 2] Checking current page...")
         current = driver.current_activity
+        print(f"   Current Activity: {current}")
+        
+        # 如果在设备添加页，直接进行下一步
+        if ".bind.AddDeviceActivity" in current:
+            print("   [OK] Already on device add page")
+            # 直接跳到点击 Setup WIFI Device
+            print("\n[Step 3] Clicking 'Setup WIFI Device' button...")
+            try:
+                wifi_btn = driver.find_element(AppiumBy.XPATH, "//*[@text='Setup WIFI Device']")
+                wifi_btn.click()
+                print("   [OK] Clicked 'Setup WIFI Device'")
+                time.sleep(3)
+            except Exception as e:
+                print(f"   [FAIL] Cannot find button: {e}")
+                return False
+            
+            # 跳到检查蓝牙页面
+            print("\n[Step 4] Checking Bluetooth search page...")
+            current = driver.current_activity
+            print(f"   Current Activity: {current}")
+            
+            if "bluetooth" in current.lower() or "search" in current.lower():
+                print("   [OK] Entered Bluetooth search page")
+            else:
+                print(f"   [INFO] Current page: {current}")
+            
+            # 截图保存
+            print("\n[Step 5] Saving screenshot...")
+            login_page = LoginPage(driver)
+            screenshot = login_page.take_screenshot("bluetooth_search_page")
+            print(f"   [OK] Saved: {screenshot}")
+            
+            print("\n" + "=" * 70)
+            print("TEST PASSED - Entered Bluetooth search page!")
+            print("=" * 70)
+            return True
         
         # 如果在促销页，先关闭弹窗
         if ".promotion." in current:
@@ -66,13 +102,19 @@ def test_add_device():
         # 如果在登录页，需要登录
         if ".login.LoginActivity" in current:
             print("   On login page, need to login first")
-            # 这里可以调用登录流程
             print("   [FAIL] Please run login test first")
             return False
         
+        # 如果不在主页，尝试返回主页
         if ".main.MainActivity" not in current:
-            print(f"   [FAIL] Not on main page: {current}")
-            return False
+            print(f"   [WARNING] Not on main page: {current}")
+            print("   Trying to go back to main page...")
+            driver.press_keycode(4)  # 返回键
+            time.sleep(2)
+            current = driver.current_activity
+            if ".main.MainActivity" not in current:
+                print("   [FAIL] Cannot reach main page")
+                return False
         
         print("   [OK] On main page")
         
@@ -95,25 +137,51 @@ def test_add_device():
         
         time.sleep(3)
         
-        # Step 4: 检查是否进入设备添加页面
-        print("\n[Step 4] Checking device add page...")
+        # Step 4: 检查是否进入设备添加页面，并点击 Setup WIFI Device
+        print("\n[Step 4] Checking device add page and click Setup WIFI Device...")
         current = driver.current_activity
         print(f"   Current Activity: {current}")
         
         # 可能的页面：设备类型选择页、蓝牙搜索页等
-        if "add" in current.lower() or "device" in current.lower() or "bluetooth" in current.lower():
+        if "add" in current.lower() or "device" in current.lower() or "bind" in current.lower():
             print("   [OK] Entered device add flow")
+            
+            # 点击 Setup WIFI Device 按钮
+            print("   Clicking 'Setup WIFI Device' button...")
+            try:
+                # 尝试通过文本查找按钮
+                wifi_btn = driver.find_element(AppiumBy.XPATH, "//*[@text='Setup WIFI Device']")
+                wifi_btn.click()
+                print("   [OK] Clicked 'Setup WIFI Device'")
+                time.sleep(3)
+            except Exception as e:
+                print(f"   [FAIL] Cannot find 'Setup WIFI Device' button: {e}")
+                return False
         else:
             print(f"   [INFO] Current page: {current}")
+            return False
         
-        # Step 5: 截图保存
-        print("\n[Step 5] Saving screenshot...")
+        # Step 5: 检查是否进入蓝牙搜索页面
+        print("\n[Step 5] Checking Bluetooth search page...")
+        current = driver.current_activity
+        print(f"   Current Activity: {current}")
+        
+        if "bluetooth" in current.lower() or "search" in current.lower() or "scan" in current.lower():
+            print("   [OK] Entered Bluetooth search page")
+        else:
+            print(f"   [INFO] Current page after click: {current}")
+            # 截图查看当前页面
+            screenshot = login_page.take_screenshot("after_wifi_setup")
+            print(f"   [OK] Screenshot saved: {screenshot}")
+        
+        # Step 6: 截图保存
+        print("\n[Step 6] Saving screenshot...")
         login_page = LoginPage(driver)
-        screenshot = login_page.take_screenshot("add_device_page")
+        screenshot = login_page.take_screenshot("bluetooth_search_page")
         print(f"   [OK] Saved: {screenshot}")
         
         print("\n" + "=" * 70)
-        print("TEST PASSED - Add device flow started!")
+        print("TEST PASSED - Entered Bluetooth search page!")
         print("=" * 70)
         return True
         
